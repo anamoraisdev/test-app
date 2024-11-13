@@ -1,10 +1,21 @@
-import { Text, View } from 'react-native';
+import React from 'react';
+
+import HomeScreen from "./screens/homeScreen";
+import ChatScreen from "./screens/chatScreen";
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>NomeApp</Text>
-    </View>
+    <NavigationContainer>
+    <Stack.Navigator initialRouteName="Home">
+      <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="chat" component={ChatScreen} /> 
+    </Stack.Navigator>
+  </NavigationContainer>
   );
 }
 
