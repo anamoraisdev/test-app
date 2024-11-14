@@ -13,7 +13,17 @@ export default function App() {
     <NavigationContainer>
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="chat" component={ChatScreen} /> 
+      <Stack.Screen name="chat" component={ChatScreen} options={{
+          headerStyle: {
+            backgroundColor: '#0098D0', 
+            height: 150,
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontSize: 30,
+            fontWeight: 'bold', 
+          },
+        }}/> 
     </Stack.Navigator>
   </NavigationContainer>
   );
