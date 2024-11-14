@@ -1,4 +1,6 @@
-{
+import 'dotenv/config';
+
+export default{
   "expo": {
     "name": "chatbot-saude",
     "slug": "chatbot-saude",
@@ -23,6 +25,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "API_KEY": process.env.API_KEY
     }
   }
 }

@@ -2,11 +2,47 @@ import { FlatList, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableO
 import CardChat from "../components/cardChat";
 import { useState } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import Constants from 'expo-constants';
+
+
 
 export default function ChatScreen() {
     const [inputText, setInputText] = useState<string>("")
     const [messages, setMessages] = useState([]);
-  
+    const [loading, setLoading] = useState(false);
+    const API_KEY = Constants.expoConfig.extra.API_KEY;
+   
+    const sendMessage = async (inputText: string) => {
+        if (inputText) {
+            const newMessage = { id: messages.length, text: inputText, sender: 'me' };
+            setMessages([...messages, newMessage]);
+            setInputText('');
+            setLoading(true);
+
+            try {
+                const genAI = new GoogleGenerativeAI(API_KEY);
+                const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+                const result = await model.generateContent(inputText);
+                const responseText = result.response.text();
+
+                receiveMessage(responseText);
+            } catch (error) {
+                console.error("Erro ao gerar resposta:", error);
+                setLoading(false);
+            }
+        }
+    };
+
+    const receiveMessage = (response: string) => {
+        const responseMessage = {
+            id: messages.length + 1,
+            text: response,
+            sender: 'other',
+        };
+        setMessages((prevMessages) => [...prevMessages, responseMessage]);
+        setLoading(false);
+    };
 
     return (
         <KeyboardAvoidingView behavior="height" style={{ flex: 1 }} keyboardVerticalOffset={120}>
@@ -27,7 +63,7 @@ export default function ChatScreen() {
                     onChangeText={(value) => setInputText(value)}
                     style={styles.input}
                 />
-                <TouchableOpacity style={styles.button} >
+                <TouchableOpacity style={styles.button} onPress={() => sendMessage(inputText)} disabled={loading}>
                     <Text style={{ color: "white", fontSize: 20, fontWeight: "bold" }}>Enviar</Text>
                 </TouchableOpacity>
             </View>
