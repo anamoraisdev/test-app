@@ -1,6 +1,6 @@
 import { FlatList, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import CardChat from "../components/cardChat";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Constants from 'expo-constants';
 
@@ -10,8 +10,9 @@ export default function ChatScreen() {
     const [inputText, setInputText] = useState<string>("")
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
+    const flatListRef = useRef<any>(null);
     const API_KEY = Constants.expoConfig.extra.API_KEY;
-   
+
     const sendMessage = async (inputText: string) => {
         if (inputText) {
             const newMessage = { id: messages.length, text: inputText, sender: 'me' };
@@ -27,6 +28,7 @@ export default function ChatScreen() {
                 const responseText = result.response.text();
 
                 receiveMessage(responseText);
+                
             } catch (error) {
                 console.error("Erro ao gerar resposta:", error);
                 setLoading(false);
@@ -44,13 +46,28 @@ export default function ChatScreen() {
         setLoading(false);
     };
 
+    const scrollToBottom = () => {
+      
+            flatListRef.current?.scrollToEnd({
+                animated: true,
+            });
+
+    };
+
+    useEffect(() => {
+        scrollToBottom()
+    }, [messages]);
+
+
     return (
         <KeyboardAvoidingView behavior="height" style={{ flex: 1 }} keyboardVerticalOffset={120}>
 
             <FlatList
                 data={messages}
+                ref={flatListRef}
                 keyExtractor={(item) => item.id.toString()}
                 contentContainerStyle={{ paddingBottom: 120 }}
+                onContentSizeChange={() => scrollToBottom()}
                 renderItem={({ item }) =>
                     <CardChat item={item} />
                 }
