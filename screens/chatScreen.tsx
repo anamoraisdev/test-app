@@ -3,6 +3,7 @@ import CardChat from "../components/cardChat";
 import { useEffect, useRef, useState } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Constants from 'expo-constants';
+import Loading from "../components/loading";
 
 
 
@@ -28,7 +29,7 @@ export default function ChatScreen() {
                 const responseText = result.response.text();
 
                 receiveMessage(responseText);
-                
+
             } catch (error) {
                 console.error("Erro ao gerar resposta:", error);
                 setLoading(false);
@@ -47,10 +48,10 @@ export default function ChatScreen() {
     };
 
     const scrollToBottom = () => {
-      
-            flatListRef.current?.scrollToEnd({
-                animated: true,
-            });
+        
+        flatListRef.current?.scrollToEnd({
+            animated: true,
+        });
 
     };
 
@@ -63,13 +64,13 @@ export default function ChatScreen() {
         <KeyboardAvoidingView behavior="height" style={{ flex: 1 }} keyboardVerticalOffset={120}>
 
             <FlatList
-                data={messages}
+                data={loading ? [...messages, { id: 'loading', sender: 'other', isLoading: true }] : messages}
                 ref={flatListRef}
                 keyExtractor={(item) => item.id.toString()}
                 contentContainerStyle={{ paddingBottom: 120 }}
                 onContentSizeChange={() => scrollToBottom()}
                 renderItem={({ item }) =>
-                    <CardChat item={item} />
+                    item.isLoading ? <Loading /> : <CardChat item={item} />
                 }
             />
 
