@@ -1,8 +1,9 @@
-import { FlatList, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Dimensions, FlatList, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import CardChat from "../components/cardChat";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Constants from 'expo-constants';
+import Loading from "../components/loading";
 
 
 
@@ -10,10 +11,12 @@ export default function ChatScreen() {
     const [inputText, setInputText] = useState<string>("")
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
+    const flatListRef = useRef<any>(null);
     const API_KEY = Constants.expoConfig.extra.API_KEY;
-   
+
     const sendMessage = async (inputText: string) => {
         if (inputText) {
+            const message = `Quero que me responda somente se a pergunta a seguir for sobre saúde e bem estar. Caso a pergunta nao seja sobre saude e bem estar,peça desculpas e responda que só esta apto a responder perguntas sobre saude e bem estar. Caso contrario, me responda normalmente, sem mencionar que a pergunta é sobre saude e bem estar. A pergunta é "${inputText}"`
             const newMessage = { id: messages.length, text: inputText, sender: 'me' };
             setMessages([...messages, newMessage]);
             setInputText('');
@@ -23,10 +26,11 @@ export default function ChatScreen() {
                 const genAI = new GoogleGenerativeAI(API_KEY);
                 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-                const result = await model.generateContent(inputText);
+                const result = await model.generateContent(message);
                 const responseText = result.response.text();
 
                 receiveMessage(responseText);
+
             } catch (error) {
                 console.error("Erro ao gerar resposta:", error);
                 setLoading(false);
@@ -44,15 +48,29 @@ export default function ChatScreen() {
         setLoading(false);
     };
 
+    const scrollToBottom = async () => {
+        flatListRef.current?.scrollToEnd({
+            animated: true,
+        });
+    };
+
+    useEffect(() => {
+        if (messages.length > 1) {
+            scrollToBottom()
+        }
+    }, [messages])
+
     return (
         <KeyboardAvoidingView behavior="height" style={{ flex: 1 }} keyboardVerticalOffset={120}>
 
             <FlatList
-                data={messages}
-                keyExtractor={(item) => item.id.toString()}
-                contentContainerStyle={{ paddingBottom: 120 }}
+                data={loading ? [...messages, { id: 'loading', sender: 'other', isLoading: true }] : messages}
+                ref={flatListRef}
+                keyExtractor={(item, index) => item.id.toString() + index}
+                style={{marginBottom: 140}}
+                scrollToOverflowEnabled={true}
                 renderItem={({ item }) =>
-                    <CardChat item={item} />
+                    item.isLoading ? <Loading /> : <CardChat item={item} />
                 }
             />
 
