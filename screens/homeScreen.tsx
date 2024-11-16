@@ -5,7 +5,7 @@ import ButtonBasic from "../components/buttonBasic";
 export default function HomeScreen({navigation}) {
     return (
         <View style={styles.container}>
-            <Image source={require('../assets/chatMed.png')} style={{objectFit: 'contain'}}/>
+            <Image source={require('../assets/chatMed.png')} resizeMode="contain" style={{width: 300, height: 300}}/>
             <Text style={styles.subTitle}>Converse sobre sua saúde e tire dúvidas!</Text>
             <ButtonBasic navigation={navigation} />
         </View>
