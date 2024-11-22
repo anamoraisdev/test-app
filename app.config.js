@@ -1,16 +1,16 @@
 import 'dotenv/config';
 
-export default{
+export default {
   "expo": {
     "name": "chatbot-saude",
     "slug": "chatbot-saude",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/chatMed.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/chatMed.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -19,15 +19,19 @@ export default{
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/chatMed.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anamorais.chatbotsaude" // Add your unique package name here
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/chatMed.png"
     },
     "extra": {
-      "API_KEY": process.env.API_KEY
+      "API_KEY": process.env.API_KEY,
+      "eas": {
+        "projectId": "3ad52b83-edbb-40e9-922d-7808bb12f878"
+      }
     }
   }
-}
+};

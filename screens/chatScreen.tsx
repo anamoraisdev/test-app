@@ -1,9 +1,10 @@
-import { Dimensions, FlatList, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Dimensions, FlatList, KeyboardAvoidingView, Platform, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import CardChat from "../components/cardChat";
 import { useEffect, useRef, useState } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Constants from 'expo-constants';
 import Loading from "../components/loading";
+
 
 
 
@@ -61,8 +62,8 @@ export default function ChatScreen() {
     }, [messages])
 
     return (
-        <KeyboardAvoidingView behavior="height" style={{ flex: 1 }} keyboardVerticalOffset={120}>
-
+        <KeyboardAvoidingView  behavior='height'  style={{ flex: 1 }} keyboardVerticalOffset={150}>
+            <StatusBar animated={true} backgroundColor="#0098D0" barStyle="light-content"/>
             <FlatList
                 data={loading ? [...messages, { id: 'loading', sender: 'other', isLoading: true }] : messages}
                 ref={flatListRef}
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "gray",
         width: "70%",
-        height: 50,
+        height: "auto",
         paddingVertical: 15,
         paddingInlineStart: 20,
         fontSize: 20
