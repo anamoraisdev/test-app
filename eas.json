@@ -9,7 +9,10 @@
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "API_KEY": "AIzaSyCiAFQuN25WYKVatZuub8Yrxe6GFSbhwYE"
+      }
     },
     "production": {
       "autoIncrement": true
